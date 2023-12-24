@@ -47,9 +47,7 @@ print("Starting.....")
 Riz = TelegramClient('Riz', Var.API_ID, Var.API_HASH).start(bot_token=Var.BOT_TOKEN)
 
 
-SUDO_USERS = []
-for x in Var.SUDO: 
-    SUDO_USERS.append(x)
+SUDO_USERS = list(Var.SUDO)
 
 @Riz.on(events.NewMessage(pattern="^/ping"))  
 async def ping(e):
@@ -64,114 +62,111 @@ async def ping(e):
 
 @Riz.on(events.NewMessage(pattern="^/kickall"))
 async def kickall(event):
-   if event.sender_id in SUDO_USERS:
-     if not event.is_group:
-         Reply = f"Noob !! Use This Cmd in Group."
-         await event.reply(Reply)
-     else:
-         await event.delete()
-         RiZ = await event.get_chat()
-         RiZoeLop = await event.client.get_me()
-         admin = RiZ.admin_rights
-         creator = RiZ.creator
-         if not admin and not creator:
-              return await event.reply("I Don't have sufficient Rights !!")
-         RiZoeL = await Riz.send_message(event.chat_id, "**Hello !! I'm Alive**")
-         admins = await event.client.get_participants(event.chat_id, filter=ChannelParticipantsAdmins)
-         admins_id = [i.id for i in admins]
-         all = 0
-         kimk = 0
-         async for user in event.client.iter_participants(event.chat_id):
-             all += 1
-             try:
+    if event.sender_id not in SUDO_USERS:
+        return
+    if not event.is_group:
+        Reply = "Noob !! Use This Cmd in Group."
+        await event.reply(Reply)
+    else:
+        await event.delete()
+        RiZ = await event.get_chat()
+        RiZoeLop = await event.client.get_me()
+        admin = RiZ.admin_rights
+        creator = RiZ.creator
+        if not admin and not creator:
+             return await event.reply("I Don't have sufficient Rights !!")
+        RiZoeL = await Riz.send_message(event.chat_id, "**Hello !! I'm Alive**")
+        admins = await event.client.get_participants(event.chat_id, filter=ChannelParticipantsAdmins)
+        admins_id = [i.id for i in admins]
+        all = 0
+        kimk = 0
+        async for user in event.client.iter_participants(event.chat_id):
+            all += 1
+            try:
                 if user.id not in admins_id:
                     await event.client.kick_participant(event.chat_id, user.id)
                     kimk += 1
                     await asyncio.sleep(0.1)
-             except Exception as e:
-                    print(str(e))
-                    await asyncio.sleep(0.1)
-         await RiZoeL.edit(f"**Users Kicked Successfully ! \n\n Kicked:** `{kimk}` \n **Total:** `{all}`")
+            except Exception as e:
+                print(e)
+                await asyncio.sleep(0.1)
+        await RiZoeL.edit(f"**Users Kicked Successfully ! \n\n Kicked:** `{kimk}` \n **Total:** `{all}`")
     
 
 @Riz.on(events.NewMessage(pattern="^/banall"))
 async def banall(event):
-   if event.sender_id in SUDO_USERS:
-     if not event.is_group:
-         Reply = f"Noob !! Use This Cmd in Group."
-         await event.reply(Reply)
-     else:
-         await event.delete()
-         RiZ = await event.get_chat()
-         RiZoeLop = await event.client.get_me()
-         admin = RiZ.admin_rights
-         creator = RiZ.creator
-         if not admin and not creator:
-              return await event.reply("I Don't have sufficient Rights !!")
-         RiZoeL = await Riz.send_message(event.chat_id, "**𝐇𝐈 𝐁𝐀𝐁𝐘 !! 𝐈.𝐦 𝐀𝐥𝐢𝐯𝐞😏**")
-         admins = await event.client.get_participants(event.chat_id, filter=ChannelParticipantsAdmins)
-         admins_id = [i.id for i in admins]
-         all = 0
-         bann = 0
-         async for user in event.client.iter_participants(event.chat_id):
-             all += 1
-             try:
-               if user.id not in admins_id:
-                    await event.client(EditBannedRequest(event.chat_id, user.id, RIGHTS))
-                    bann += 1
-                    await asyncio.sleep(0.1)
-             except Exception as e:
-                   print(str(e))
-                   await asyncio.sleep(0.1)
-         await RiZoeL.edit(f"**Users Banned Successfully ! \n\n Banned Users:** `{bann}` \n **Total Users:** `{all}`")
+    if event.sender_id not in SUDO_USERS:
+        return
+    if not event.is_group:
+        Reply = "Noob !! Use This Cmd in Group."
+        await event.reply(Reply)
+    else:
+        await event.delete()
+        RiZ = await event.get_chat()
+        RiZoeLop = await event.client.get_me()
+        admin = RiZ.admin_rights
+        creator = RiZ.creator
+        if not admin and not creator:
+             return await event.reply("I Don't have sufficient Rights !!")
+        RiZoeL = await Riz.send_message(event.chat_id, "**𝐇𝐈 𝐁𝐀𝐁𝐘 !! 𝐈.𝐦 𝐀𝐥𝐢𝐯𝐞😏**")
+        admins = await event.client.get_participants(event.chat_id, filter=ChannelParticipantsAdmins)
+        admins_id = [i.id for i in admins]
+        all = 0
+        bann = 0
+        async for user in event.client.iter_participants(event.chat_id):
+            all += 1
+            try:
+                if user.id not in admins_id:
+                     await event.client(EditBannedRequest(event.chat_id, user.id, RIGHTS))
+                     bann += 1
+                     await asyncio.sleep(0.1)
+            except Exception as e:
+                print(e)
+                await asyncio.sleep(0.1)
+        await RiZoeL.edit(f"**Users Banned Successfully ! \n\n Banned Users:** `{bann}` \n **Total Users:** `{all}`")
 
     
 @Riz.on(events.NewMessage(pattern="^/unbanall"))
 async def unban(event):
-   if event.sender_id in SUDO_USERS:
-     if not event.is_group:
-         Reply = f"Noob !! Use This Cmd in Group."
-         await event.reply(Reply)
-     else:
-         msg = await event.reply("Searching Participant Lists.")
-         p = 0
-         async for i in event.client.iter_participants(event.chat_id, filter=ChannelParticipantsKicked, aggressive=True):
-              rights = ChatBannedRights(until_date=0, view_messages=False)
-              try:
-                await event.client(functions.channels.EditBannedRequest(event.chat_id, i, rights))
-              except FloodWaitError as ex:
-                 print(f"sleeping for {ex.seconds} seconds")
-                 sleep(ex.seconds)
-              except Exception as ex:
-                 await msg.edit(str(ex))
-              else:
-                  p += 1
-         await msg.edit("{}: {} unbanned".format(event.chat_id, p))
+    if event.sender_id not in SUDO_USERS:
+        return
+    if not event.is_group:
+        Reply = "Noob !! Use This Cmd in Group."
+        await event.reply(Reply)
+    else:
+        msg = await event.reply("Searching Participant Lists.")
+        p = 0
+        async for i in event.client.iter_participants(event.chat_id, filter=ChannelParticipantsKicked, aggressive=True):
+             rights = ChatBannedRights(until_date=0, view_messages=False)
+             try:
+               await event.client(functions.channels.EditBannedRequest(event.chat_id, i, rights))
+             except FloodWaitError as ex:
+                print(f"sleeping for {ex.seconds} seconds")
+                sleep(ex.seconds)
+             except Exception as ex:
+                await msg.edit(str(ex))
+             else:
+                 p += 1
+        await msg.edit(f"{event.chat_id}: {p} unbanned")
 
 
 @Riz.on(events.NewMessage(pattern="^/leave"))
 async def _(e):
-    if e.sender_id in SUDO_USERS:
-        rizoel = ("".join(e.text.split(maxsplit=1)[1:])).split(" ", 1)
-        if len(e.text) > 7:
-            bc = rizoel[0]
-            bc = int(bc)
-            text = "Leaving....."
-            event = await e.reply(text, parse_mode=None, link_preview=None )
-            try:
-                await event.client(LeaveChannelRequest(bc))
-                await event.edit("Succesfully Left")
-            except Exception as e:
-                await event.edit(str(e))   
-        else:
-            bc = e.chat_id
-            text = "Leaving....."
-            event = await e.reply(text, parse_mode=None, link_preview=None )
-            try:
-                await event.client(LeaveChannelRequest(bc))
-                await event.edit("Succesfully Left")
-            except Exception as e:
-                await event.edit(str(e))   
+    if e.sender_id not in SUDO_USERS:
+        return
+    rizoel = ("".join(e.text.split(maxsplit=1)[1:])).split(" ", 1)
+    if len(e.text) > 7:
+        bc = rizoel[0]
+        bc = int(bc)
+    else:
+        bc = e.chat_id
+    text = "Leaving....."
+    event = await e.reply(text, parse_mode=None, link_preview=None )
+    try:
+        await event.client(LeaveChannelRequest(bc))
+        await event.edit("Succesfully Left")
+    except Exception as e:
+        await event.edit(str(e))   
           
 
 @Riz.on(events.NewMessage(pattern="^/restart"))
